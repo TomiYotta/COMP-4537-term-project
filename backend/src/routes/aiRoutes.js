@@ -6,7 +6,7 @@ import {
 
 const router = express.Router();
 
-// Later, your auth teammate can protect this route with JWT middleware:
+// Later, auth teammate can protect this route with JWT middleware:
 // router.post("/evaluate", verifyJWT, evaluateAnswerController);
 
 router.get("/health", aiHealthController);

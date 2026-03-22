@@ -8,7 +8,7 @@ const __dirname = path.dirname(__filename);
 const PROJECT_ROOT = path.resolve(__dirname, "../../");
 const CACHE_DIR = path.join(PROJECT_ROOT, ".cache");
 
-// Store downloaded model files here so you can show them during demo
+// Store downloaded model files here
 env.cacheDir = CACHE_DIR;
 
 class EmbeddingPipeline {

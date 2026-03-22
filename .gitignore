@@ -1,0 +1,13 @@
+# Root-level accidental npm install artifacts
+node_modules/
+package-lock.json
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
