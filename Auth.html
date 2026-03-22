@@ -18,10 +18,9 @@
       Real-Time Classroom
     </h2>
 
-    <!-- Tabs -->
     <div class="flex border-b-2 border-[#2d2d2d] mb-6">
       <button id="tab-login" onclick="switchTab('login')"
-        class="tab-btn flex-1 py-2 font-caveat text-lg font-semibold bg-transparent border-none cursor-pointer text-[#888] transition-colors">
+        class="tab-btn flex-1 py-2 font-caveat text-lg font-semibold bg-transparent border-none cursor-pointer text-[#888] transition-colors active">
         Log In
       </button>
       <button id="tab-signup" onclick="switchTab('signup')"
@@ -30,47 +29,47 @@
       </button>
     </div>
 
-    <!-- LOGIN -->
     <div id="panel-login" class="panel active">
+      <div id="login-error" class="hidden font-caveat text-[#e05a5a] text-base font-bold text-center mb-3"></div>
+      
       <div class="mb-4">
         <label class="font-caveat block mb-1 text-base font-semibold text-[#444]">Email</label>
-        <input type="email" placeholder="you@school.edu" class="wb-input w-full bg-transparent border-b-2 border-[#aaa] px-0.5 py-1.5 text-[#1a1a1a] text-sm outline-none"/>
+        <input type="email" id="login-email" placeholder="you@school.edu" class="wb-input w-full bg-transparent border-b-2 border-[#aaa] px-0.5 py-1.5 text-[#1a1a1a] text-sm outline-none"/>
       </div>
       <div class="mb-4">
         <label class="font-caveat flex justify-between mb-1 text-base font-semibold text-[#444]">
           Password
-          <a href="#" class="font-caveat text-[#e05a5a] text-sm hover:underline">Forgot?</a>
         </label>
-        <input type="password" placeholder="••••••••" class="wb-input w-full bg-transparent border-b-2 border-[#aaa] px-0.5 py-1.5 text-[#1a1a1a] text-sm outline-none"/>
+        <input type="password" id="login-password" placeholder="••••••••" class="wb-input w-full bg-transparent border-b-2 border-[#aaa] px-0.5 py-1.5 text-[#1a1a1a] text-sm outline-none"/>
       </div>
-      <button onclick="window.location.href='teacher-dashboard.html'"
+      <button onclick="handleLogin()"
         class="wb-btn w-full mt-5 py-2.5 bg-[#2d2d2d] text-[#fafaf7] text-lg font-bold rounded-sm border-[2.5px] border-[#2d2d2d] cursor-pointer tracking-wide hover:-translate-y-px active:translate-y-px transition-transform">
         Continue →
       </button>
     </div>
 
-    <!-- SIGNUP -->
     <div id="panel-signup" class="panel">
+      <div id="signup-error" class="hidden font-caveat text-[#e05a5a] text-base font-bold text-center mb-3"></div>
+
       <div class="flex gap-4 mb-4">
         <div class="flex-1">
           <label class="font-caveat block mb-1 text-base font-semibold text-[#444]">First Name</label>
-          <input type="text" placeholder="Jane" class="wb-input w-full bg-transparent border-b-2 border-[#aaa] px-0.5 py-1.5 text-[#1a1a1a] text-sm outline-none"/>
+          <input type="text" id="signup-fname" placeholder="Jane" class="wb-input w-full bg-transparent border-b-2 border-[#aaa] px-0.5 py-1.5 text-[#1a1a1a] text-sm outline-none"/>
         </div>
         <div class="flex-1">
           <label class="font-caveat block mb-1 text-base font-semibold text-[#444]">Last Name</label>
-          <input type="text" placeholder="Doe" class="wb-input w-full bg-transparent border-b-2 border-[#aaa] px-0.5 py-1.5 text-[#1a1a1a] text-sm outline-none"/>
+          <input type="text" id="signup-lname" placeholder="Doe" class="wb-input w-full bg-transparent border-b-2 border-[#aaa] px-0.5 py-1.5 text-[#1a1a1a] text-sm outline-none"/>
         </div>
       </div>
       <div class="mb-4">
         <label class="font-caveat block mb-1 text-base font-semibold text-[#444]">Email</label>
-        <input type="email" placeholder="you@school.edu" class="wb-input w-full bg-transparent border-b-2 border-[#aaa] px-0.5 py-1.5 text-[#1a1a1a] text-sm outline-none"/>
+        <input type="email" id="signup-email" placeholder="you@school.edu" class="wb-input w-full bg-transparent border-b-2 border-[#aaa] px-0.5 py-1.5 text-[#1a1a1a] text-sm outline-none"/>
       </div>
       <div class="mb-4">
         <label class="font-caveat block mb-1 text-base font-semibold text-[#444]">Password</label>
-        <input type="password" placeholder="Min. 8 characters" class="wb-input w-full bg-transparent border-b-2 border-[#aaa] px-0.5 py-1.5 text-[#1a1a1a] text-sm outline-none"/>
+        <input type="password" id="signup-password" placeholder="Min. 8 characters" class="wb-input w-full bg-transparent border-b-2 border-[#aaa] px-0.5 py-1.5 text-[#1a1a1a] text-sm outline-none"/>
       </div>
 
-      <!-- Role Selector -->
       <div class="mb-4">
         <label class="font-caveat block mb-2 text-base font-semibold text-[#444]">I am a...</label>
         <div class="flex gap-3">
@@ -94,6 +93,12 @@
   </div>
 
   <script>
+    // If you are looking at the site locally, use localhost. If hosted, use the live API.
+    const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+    const API_URL = isLocal 
+      ? "http://localhost:3000/api/auth" 
+      : "https://your-live-backend-url.render.com/api/auth";
+    
     let selectedRole = null;
 
     function switchTab(tab) {
@@ -101,18 +106,88 @@
         document.getElementById('tab-' + t).classList.toggle('active', t === tab);
         document.getElementById('panel-' + t).classList.toggle('active', t === tab);
       });
+      document.getElementById('login-error').classList.add('hidden');
+      document.getElementById('signup-error').classList.add('hidden');
     }
 
     function selectRole(role) {
       selectedRole = role;
       ['student','teacher'].forEach(r => {
-        document.getElementById('role-' + r).classList.toggle('selected', r === role);
+        document.getElementById('role-' + r).classList.toggle('bg-[#2d2d2d]', r === role);
+        document.getElementById('role-' + r).classList.toggle('text-[#fafaf7]', r === role);
+        document.getElementById('role-' + r).classList.toggle('text-[#2d2d2d]', r !== role);
       });
     }
 
-    function handleSignup() {
-      if (!selectedRole) { alert('Please select a role!'); return; }
-      window.location.href = selectedRole === 'teacher' ? 'teacher-dashboard.html' : 'student-dashboard.html';
+    function showError(panel, message) {
+      const errDiv = document.getElementById(`${panel}-error`);
+      errDiv.textContent = message;
+      errDiv.classList.remove('hidden');
+    }
+
+    async function handleLogin() {
+      const email = document.getElementById('login-email').value.trim();
+      const password = document.getElementById('login-password').value.trim();
+
+      if (!email || !password) return showError('login', 'Please enter both email and password.');
+
+      try {
+        const res = await fetch(`${API_URL}/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+        
+        const data = await res.json();
+        
+        if (!res.ok) throw new Error(data.error || 'Login failed.');
+
+        // Save token and user data
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('user', JSON.stringify(data.user));
+
+        // Route based on role
+        if (data.user.role === 'admin' || data.user.role === 'teacher') {
+          window.location.href = 'teacher-dashboard.html';
+        } else {
+          window.location.href = 'student-dashboard.html';
+        }
+
+      } catch (err) {
+        showError('login', err.message);
+      }
+    }
+
+    async function handleSignup() {
+      const firstName = document.getElementById('signup-fname').value.trim();
+      const lastName = document.getElementById('signup-lname').value.trim();
+      const email = document.getElementById('signup-email').value.trim();
+      const password = document.getElementById('signup-password').value.trim();
+
+      if (!firstName || !lastName || !email || !password) return showError('signup', 'All fields are required.');
+      if (!selectedRole) return showError('signup', 'Please select a role!');
+
+      try {
+        const res = await fetch(`${API_URL}/register`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ firstName, lastName, email, password, role: selectedRole })
+        });
+        
+        const data = await res.json();
+        
+        if (!res.ok) throw new Error(data.error || 'Registration failed.');
+
+        alert("Account created successfully! Please log in.");
+        switchTab('login');
+        
+        // Pre-fill the login email for convenience
+        document.getElementById('login-email').value = email;
+        document.getElementById('login-password').value = "";
+
+      } catch (err) {
+        showError('signup', err.message);
+      }
     }
   </script>
 </body>
