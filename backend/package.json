@@ -1,0 +1,17 @@
+{
+  "name": "comp4537-ai-service",
+  "version": "1.0.0",
+  "description": "AI endpoint for evaluating student answers with Hugging Face",
+  "type": "module",
+  "main": "src/app.js",
+  "scripts": {
+    "start": "node src/app.js",
+    "dev": "node src/app.js"
+  },
+  "dependencies": {
+    "@huggingface/transformers": "^3.8.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.6.1",
+    "express": "^5.1.0"
+  }
+}
