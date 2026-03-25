@@ -60,7 +60,6 @@ export function getModelInfo() {
   return {
     model: EmbeddingPipeline.model,
     task: EmbeddingPipeline.task,
-    cacheDir: CACHE_DIR,
     ready: EmbeddingPipeline.isReady()
   };
 }
@@ -99,7 +98,6 @@ export async function evaluateAnswer({ question, referenceAnswer, studentAnswer 
     similarity: roundedSimilarity,
     verdict: verdictData.verdict,
     feedback: verdictData.feedback,
-    model: EmbeddingPipeline.model,
-    cacheDir: CACHE_DIR
+    model: EmbeddingPipeline.model
   };
 }
