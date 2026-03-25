@@ -1,0 +1,134 @@
+:root {
+  --bg: #f0ede6;
+  --card: #fffdf9;
+  --text: #232323;
+  --muted: #575757;
+  --accent: #2d2d2d;
+  --accent-soft: #e7e7e7;
+  --border: #cfc8bd;
+  --focus: #5b8dd9;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  color: var(--text);
+  background-color: var(--bg);
+  background-image:
+    linear-gradient(rgba(180, 200, 220, 0.25) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(180, 200, 220, 0.25) 1px, transparent 1px);
+  background-size: 36px 36px;
+  padding: 20px;
+}
+
+.container {
+  max-width: 1020px;
+  margin: 0 auto;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: 4px 4px 0 #2d2d2d;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  padding: 16px;
+}
+
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.panel {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #fff;
+  padding: 14px;
+}
+
+.panel h2 {
+  margin: 0 0 10px;
+  font-size: 1rem;
+}
+
+label {
+  display: block;
+  font-weight: 600;
+  margin: 8px 0 6px;
+}
+
+textarea,
+pre {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font: 0.95rem/1.45 Consolas, "Courier New", monospace;
+  padding: 10px;
+  background: #fff;
+}
+
+textarea:focus {
+  outline: none;
+  border-color: var(--focus);
+}
+
+textarea {
+  min-height: 310px;
+  resize: vertical;
+}
+
+pre {
+  min-height: 420px;
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+  background: #fbfbfb;
+  color: #222;
+}
+
+.controls {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+
+button {
+  border: 1px solid #222;
+  border-radius: 8px;
+  padding: 9px 14px;
+  cursor: pointer;
+  font-weight: 700;
+  transition: transform 0.08s ease;
+}
+
+.primary {
+  background: var(--accent);
+  color: #fff;
+  box-shadow: 2px 2px 0 #555;
+}
+
+.primary:hover {
+  transform: translate(-1px, -1px);
+}
+
+.secondary {
+  background: var(--accent-soft);
+  color: #222;
+  box-shadow: 2px 2px 0 #888;
+}
+
+.hint {
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
