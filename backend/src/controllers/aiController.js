@@ -1,6 +1,7 @@
 import path from "path";
 import { fileURLToPath } from "url";
 import { evaluateAnswer, getModelInfo } from "../services/aiService.js";
+import { readPool } from "../config/db.js"; // Import the read pool to securely fetch room data
 
 const MAX_LENGTH = 2000;
 const __filename = fileURLToPath(import.meta.url);
@@ -27,11 +28,11 @@ function validateTextField(fieldName, value) {
 
 export async function evaluateAnswerController(req, res) {
   try {
-    const { question, referenceAnswer, studentAnswer } = req.body;
+    // We now expect the roomCode instead of the referenceAnswer
+    const { roomCode, studentAnswer } = req.body;
 
-    const referenceError = validateTextField("referenceAnswer", referenceAnswer);
-    if (referenceError) {
-      return res.status(400).json({ error: referenceError });
+    if (!roomCode) {
+      return res.status(400).json({ error: "roomCode is required." });
     }
 
     const studentError = validateTextField("studentAnswer", studentAnswer);
@@ -39,14 +40,27 @@ export async function evaluateAnswerController(req, res) {
       return res.status(400).json({ error: studentError });
     }
 
-    if (question !== undefined && typeof question !== "string") {
-      return res.status(400).json({ error: "question must be a string if provided." });
+    // 1. Securely fetch the active question and teacher's reference answer from the database
+    const [roomRows] = await readPool.execute(
+      "SELECT current_question, sample_answer FROM rooms WHERE room_code = ?",
+      [roomCode]
+    );
+
+    if (roomRows.length === 0) {
+      return res.status(404).json({ error: "Invalid room code or session has ended." });
     }
 
+    const { current_question, sample_answer } = roomRows[0];
+
+    if (!current_question || !sample_answer) {
+      return res.status(400).json({ error: "No active question has been asked in this room yet." });
+    }
+
+    // 2. Evaluate the student's answer against the securely fetched database reference
     const result = await evaluateAnswer({
-      question,
-      referenceAnswer,
-      studentAnswer
+      question: current_question,
+      referenceAnswer: sample_answer,
+      studentAnswer: studentAnswer
     });
 
     return res.status(200).json(result);
