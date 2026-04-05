@@ -2,6 +2,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { evaluateAnswer, getModelInfo } from "../services/aiService.js";
 import { readPool } from "../config/db.js"; // Import the read pool to securely fetch room data
+import { recordStudentResponse } from "../services/roomSessionStore.js";
 
 const MAX_LENGTH = 2000;
 const __filename = fileURLToPath(import.meta.url);
@@ -61,6 +62,24 @@ export async function evaluateAnswerController(req, res) {
       question: current_question,
       referenceAnswer: sample_answer,
       studentAnswer: studentAnswer
+    });
+
+    const [userRows] = await readPool.execute(
+      "SELECT first_name, last_name FROM users WHERE id = ?",
+      [req.user.id]
+    );
+    const userRecord = userRows[0];
+
+    recordStudentResponse(roomCode, {
+      studentId: req.user.id,
+      studentName: userRecord
+        ? `${userRecord.first_name} ${userRecord.last_name?.trim() || ""}`.trim()
+        : `Student ${req.user.id}`,
+      answer: result.studentAnswer,
+      question: current_question,
+      verdict: result.verdict,
+      similarity: result.similarity,
+      feedback: result.feedback
     });
 
     return res.status(200).json(result);

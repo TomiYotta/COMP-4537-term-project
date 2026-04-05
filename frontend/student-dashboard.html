@@ -18,6 +18,7 @@
     }
 
     function logout() {
+      sessionStorage.clear();
       localStorage.removeItem('token');
       localStorage.removeItem('user');
       window.location.href = 'Auth.html';
@@ -35,11 +36,22 @@
 
   <div class="max-w-2xl mx-auto flex flex-col gap-5">
 
-    <div id="question-card" class="wb-card-yellow bg-[#fffbe6] border-[2.5px] border-[#f0c040] rounded-sm p-6">
+    <div class="wb-card bg-[#fafaf7] border-[2.5px] border-[#2d2d2d] rounded-sm p-5">
+      <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <p class="font-caveat text-xs font-bold uppercase tracking-wider text-[#5b8dd9]">Joined Room</p>
+          <p id="room-code-display" class="font-caveat text-[2rem] font-bold tracking-[0.35em] text-[#1a1a1a]">------</p>
+        </div>
+        <button onclick="changeRoom()"
+          class="wb-btn px-5 py-2 bg-[#2d2d2d] text-[#fafaf7] text-base font-bold rounded-sm border-[2px] border-[#2d2d2d] cursor-pointer hover:-translate-y-px active:translate-y-px transition-transform">
+          Change Room
+        </button>
+      </div>
+    </div>
+
+    <div id="question-card" class="wb-card-yellow bg-[#fffbe6] border-[2.5px] border-[#f0c040] rounded-sm p-6 hidden">
       <p class="font-caveat text-xs font-bold text-[#b8860b] uppercase tracking-wider mb-3">⏳ Question from Teacher</p>
-      <p class="text-lg text-[#1a1a1a] mb-5" id="question-text">
-        What is the primary function of the mitochondria in a cell?
-      </p>
+      <p class="text-lg text-[#1a1a1a] mb-5" id="question-text"></p>
 
       <div id="answer-area">
         <label class="font-caveat block mb-1 text-base font-semibold text-[#444]">Your Answer</label>
@@ -59,10 +71,10 @@
       </div>
     </div>
 
-    <div id="waiting-card" class="wb-card-grey hidden bg-[#fafaf7] border-[2.5px] border-dashed border-[#bbb] rounded-sm p-8 text-center">
+    <div id="waiting-card" class="wb-card-grey bg-[#fafaf7] border-[2.5px] border-dashed border-[#bbb] rounded-sm p-8 text-center">
       <p class="text-4xl mb-3">🕐</p>
-      <p class="font-caveat text-xl font-bold text-[#888]">Waiting for next question...</p>
-      <p class="text-sm text-[#aaa] mt-1">Your teacher will send a question shortly.</p>
+      <p id="waiting-title" class="font-caveat text-xl font-bold text-[#888]">Waiting for next question...</p>
+      <p id="waiting-text" class="text-sm text-[#aaa] mt-1">Your teacher will send a question shortly.</p>
     </div>
 
     <div class="wb-card bg-[#fafaf7] border-[2.5px] border-[#2d2d2d] rounded-sm p-5">

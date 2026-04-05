@@ -9,19 +9,18 @@
   <link rel="stylesheet" href="dashboard.css"/>
   <link rel="icon" type="image/png" href="public/favicon.ico">
   <script>
-    // --- SECURITY & ROLE CHECK ---
-    const token = localStorage.getItem('token');
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    const token = localStorage.getItem("token");
+    const user = JSON.parse(localStorage.getItem("user") || "{}");
 
-    // Boot them if no token OR if they are just a student
-    if (!token || (user.role !== 'teacher' && user.role !== 'admin')) {
-      window.location.href = 'Auth.html';
+    if (!token || (user.role !== "teacher" && user.role !== "admin")) {
+      window.location.href = "Auth.html";
     }
 
     function logout() {
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-      window.location.href = 'Auth.html';
+      sessionStorage.clear();
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      window.location.href = "Auth.html";
     }
   </script>
 </head>
@@ -34,15 +33,30 @@
     </div>
   </div>
 
-  <div class="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-5">
+  <div id="teacher-dashboard-layout" class="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-5">
 
     <div class="lg:col-span-1 flex flex-col gap-5">
+
+      <div class="wb-card bg-[#fafaf7] border-[2.5px] border-[#2d2d2d] rounded-sm p-5">
+        <h2 class="font-caveat text-[1.3rem] font-bold text-[#1a1a1a] mb-4 border-b-2 border-dashed border-[#ccc] pb-2">Session Room</h2>
+        <p class="text-sm text-[#666]">Share this 6-digit code with students so they can join your live session.</p>
+        <div class="mt-4 flex items-end justify-between gap-4">
+          <div>
+            <p class="font-caveat text-xs font-bold uppercase tracking-wider text-[#5b8dd9]">Join Code</p>
+            <p id="room-code" class="font-caveat text-[2rem] font-bold tracking-[0.35em] text-[#1a1a1a]">------</p>
+          </div>
+          <p id="room-status" class="text-sm text-[#666]">Starting room...</p>
+        </div>
+      </div>
 
       <div class="wb-card bg-[#fafaf7] border-[2.5px] border-[#2d2d2d] rounded-sm p-5">
         <h2 class="font-caveat text-[1.3rem] font-bold text-[#1a1a1a] mb-4 border-b-2 border-dashed border-[#ccc] pb-2">✏️ Ask a Question</h2>
         <textarea id="question-input" placeholder="Type your question here..." rows="3"
           class="w-full bg-transparent border-2 border-dashed border-[#bbb] rounded-sm p-2 text-sm text-[#1a1a1a] outline-none resize-none"></textarea>
-        <button onclick="sendQuestion()"
+        <label for="reference-answer-input" class="font-caveat block mt-4 mb-1 text-base font-semibold text-[#444]">Reference Answer</label>
+        <textarea id="reference-answer-input" placeholder="Write the answer students should be judged against..." rows="3"
+          class="w-full bg-transparent border-2 border-dashed border-[#bbb] rounded-sm p-2 text-sm text-[#1a1a1a] outline-none resize-none"></textarea>
+        <button id="send-question-btn" onclick="sendQuestion()"
           class="wb-btn w-full mt-4 py-2 bg-[#2d2d2d] text-[#fafaf7] text-base font-bold rounded-sm border-[2px] border-[#2d2d2d] cursor-pointer hover:-translate-y-px active:translate-y-px transition-transform">
           Send to Students →
         </button>
@@ -52,20 +66,20 @@
         <h2 class="font-caveat text-[1.3rem] font-bold text-[#1a1a1a] mb-4 border-b-2 border-dashed border-[#ccc] pb-2">📊 Participation</h2>
         <div class="font-caveat flex justify-between text-sm mb-1">
           <span class="text-[#444]">Responded</span>
-          <span class="font-bold text-[#1a1a1a]" id="responded-count">18 / 24</span>
+          <span class="font-bold text-[#1a1a1a]" id="responded-count">0 / 0</span>
         </div>
         <div class="w-full h-4 bg-[#e8e4dc] border-[2px] border-[#2d2d2d] rounded-sm overflow-hidden">
-          <div id="participation-bar" class="h-full bg-[#4caf7d]" style="width:75%"></div>
+          <div id="participation-bar" class="h-full bg-[#4caf7d]" style="width:0%"></div>
         </div>
-        <p class="font-caveat text-xs text-[#888] mt-1">75% participation</p>
+        <p id="participation-text" class="font-caveat text-xs text-[#888] mt-1">Waiting for students to join.</p>
 
         <div class="mt-4 grid grid-cols-2 gap-2 text-center">
           <div class="border-[2px] border-dashed border-[#2d2d2d] rounded-sm py-2">
-            <div class="font-caveat text-xl font-bold text-[#4caf7d]" id="correct-count">13</div>
+            <div class="font-caveat text-xl font-bold text-[#4caf7d]" id="correct-count">0</div>
             <div class="font-caveat text-xs text-[#666]">Correct</div>
           </div>
           <div class="border-[2px] border-dashed border-[#2d2d2d] rounded-sm py-2">
-            <div class="font-caveat text-xl font-bold text-[#e05a5a]" id="wrong-count">5</div>
+            <div class="font-caveat text-xl font-bold text-[#e05a5a]" id="wrong-count">0</div>
             <div class="font-caveat text-xs text-[#666]">Wrong</div>
           </div>
         </div>
@@ -107,6 +121,42 @@
         </div>
       </div>
 
+    </div>
+  </div>
+
+  <div id="admin-section" class="max-w-5xl mx-auto hidden">
+    <div class="wb-card bg-[#fafaf7] border-[2.5px] border-[#2d2d2d] rounded-sm p-5">
+      <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+        <div>
+          <h2 class="font-caveat text-[1.5rem] font-bold text-[#1a1a1a]">Admin Overview</h2>
+        </div>
+        <button id="admin-refresh-btn"
+          class="wb-btn px-5 py-2 bg-[#2d2d2d] text-[#fafaf7] text-base font-bold rounded-sm border-[2px] border-[#2d2d2d] cursor-pointer hover:-translate-y-px active:translate-y-px transition-transform">
+          Refresh Data
+        </button>
+      </div>
+
+      <div class="mt-5 grid grid-cols-1 md:grid-cols-3 gap-3 text-center">
+        <div class="border-[2px] border-dashed border-[#2d2d2d] rounded-sm py-3">
+          <div id="admin-total-calls" class="font-caveat text-2xl font-bold text-[#5b8dd9]">0</div>
+          <div class="font-caveat text-xs text-[#666] mt-0.5">Total API Calls</div>
+        </div>
+        <div class="border-[2px] border-dashed border-[#2d2d2d] rounded-sm py-3">
+          <div id="admin-user-count" class="font-caveat text-2xl font-bold text-[#1a1a1a]">0</div>
+          <div class="font-caveat text-xs text-[#666] mt-0.5">Registered Users</div>
+        </div>
+        <div class="border-[2px] border-dashed border-[#2d2d2d] rounded-sm py-3 px-3">
+          <div id="admin-role-breakdown" class="font-caveat text-base font-bold text-[#4caf7d]">No users yet.</div>
+          <div class="font-caveat text-xs text-[#666] mt-0.5">Role Breakdown</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="wb-card bg-[#fafaf7] border-[2.5px] border-[#2d2d2d] rounded-sm p-5 mt-5">
+      <h2 class="font-caveat text-[1.3rem] font-bold text-[#1a1a1a] mb-4 border-b-2 border-dashed border-[#ccc] pb-2">Users</h2>
+      <div id="admin-users-list" class="flex flex-col gap-3">
+        <p class="text-sm text-[#aaa] italic">Loading users...</p>
+      </div>
     </div>
   </div>
 

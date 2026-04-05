@@ -4,6 +4,8 @@ import jwt from "jsonwebtoken";
 import { writePool } from "../config/db.js";
 import { sendPasswordResetEmail } from "../services/emailService.js";
 
+const JWT_SECRET = process.env.JWT_SECRET || "fallback_super_secret_key";
+
 export async function register(req, res) {
   try {
     const { firstName, lastName, email, password, role } = req.body;
@@ -65,7 +67,7 @@ export async function login(req, res) {
 
     const token = jwt.sign(
       { id: user.id, role: user.role },
-      process.env.JWT_SECRET,
+      JWT_SECRET,
       { expiresIn: "7d" }
     );
 
