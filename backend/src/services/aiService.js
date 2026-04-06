@@ -10,9 +10,9 @@ const CACHE_DIR = path.join(PROJECT_ROOT, ".cache");
 const MODEL_DIR = path.join(PROJECT_ROOT, "../../models");
 
 env.cacheDir = CACHE_DIR;
-env.allowRemoteModels = false;
+// env.allowRemoteModels = false;
 env.localModelPath = MODEL_DIR;
-env.backends.onnx.wasm.proxy
+env.backends.onnx.wasm.proxy = false;
 
 class EmbeddingPipeline {
   static task = "feature-extraction";
