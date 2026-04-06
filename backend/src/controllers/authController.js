@@ -116,7 +116,7 @@ export async function forgotPassword(req, res) {
     const isLocal = process.env.NODE_ENV !== "production";
     const resetLink = isLocal
       ? `http://127.0.0.1:5500/frontend/reset-password.html?token=${token}`
-      : `https://your-live-frontend-url.com/reset-password.html?token=${token}`;
+      : `https://comp-4537-term-project-o5.netlify.app/reset-password.html?token=${token}`;
 
     await sendPasswordResetEmail(email, resetLink);
 

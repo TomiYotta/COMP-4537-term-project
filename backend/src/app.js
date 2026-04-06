@@ -16,7 +16,7 @@ app.use(helmet());
 
 app.use(
   cors({
-    origin: [process.env.CLIENT_ORIGIN, "http://localhost:5173", "http://localhost:5500", "http://127.0.0.1:5500"].filter(Boolean),
+    origin: [process.env.CLIENT_ORIGIN].filter(Boolean),
     credentials: true,
     exposedHeaders: ['X-API-Warning'] 
   })
