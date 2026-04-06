@@ -7,7 +7,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const PROJECT_ROOT = path.resolve(__dirname, "../../");
 const CACHE_DIR = path.join(PROJECT_ROOT, ".cache");
-const MODEL_DIR = path.join(PROJECT_ROOT, ".cache");
+const MODEL_DIR = path.join(PROJECT_ROOT, "../../models");
 
 env.cacheDir = CACHE_DIR;
 env.allowRemoteModels = false;
