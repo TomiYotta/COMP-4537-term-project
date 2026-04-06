@@ -9,31 +9,42 @@
 </head>
 
 <body>
-    <main class="container">
-        <section class="grid">
-            <article class="panel">
-                <h2>Request</h2>
-                <label for="payload">JSON Body</label>
-                <textarea id="payload" spellcheck="false">{
-  "question": "What is polymorphism?",
-  "referenceAnswer": "Polymorphism allows objects of different types to be treated through a common interface.",
+    <div class="panel">
+        <main class="container">
+            <section class="grid">
+                <article class="panel"
+                    style="grid-column: 1 / -1; background: #eef2f7; border-left: 5px solid #007bff;">
+                    <div style="font-size: 0.9rem">
+                        <strong>Question:</strong>
+                        <span id="qText">What is the primary purpose of a database index?</span>
+                    </div>
+                    <div style="font-size: 0.9rem">
+                        <strong>Reference Answer:</strong>
+                        <span id="refText">To speed up data retrieval operations on a table.</span>
+                    </div>
+                </article>
+                <article class="panel">
+                    <h2>Request</h2>
+                    <label for="payload">JSON Body</label>
+                    <textarea id="payload" spellcheck="false">{
+  "roomCode": "DEMO123",
   "studentAnswer": "Polymorphism means different objects can be used through the same parent type."
 }</textarea>
 
-                <div class="controls">
-                    <button class="primary" id="sendButton" type="button">Send Request</button>
-                    <button class="secondary" id="formatButton" type="button">Format JSON</button>
-                </div>
-            </article>
+                    <div class="controls">
+                        <button class="primary" id="sendButton" type="button">Send Request</button>
+                        <button class="secondary" id="formatButton" type="button">Format JSON</button>
+                    </div>
+                </article>
 
-            <article class="panel">
-                <h2>Response</h2>
-                <pre id="output">Empty.</pre>
-            </article>
-        </section>
-    </main>
+                <article class="panel">
+                    <h2>Response</h2>
+                    <pre id="output">Empty.</pre>
+                </article>
+            </section>
+        </main>
 
-    <script src="/api/ai/demo.js"></script>
+        <script src="/api/ai/demo.js"></script>
 </body>
 
 </html>

@@ -36,6 +36,22 @@ export async function evaluateAnswerController(req, res) {
       return res.status(400).json({ error: "roomCode is required." });
     }
 
+    if (roomCode === "DEMO123") {
+      const demoQuestion = "What is the primary purpose of a database index?";
+      const demoSample = "To speed up data retrieval operations on a table.";
+
+      const result = await evaluateAnswer({
+        question: demoQuestion,
+        referenceAnswer: demoSample,
+        studentAnswer: studentAnswer
+      });
+
+      return res.status(200).json({ 
+        message: "Demo Mode Active (Bypassed DB)", 
+        ...result 
+      });
+    }
+
     const studentError = validateTextField("studentAnswer", studentAnswer);
     if (studentError) {
       return res.status(400).json({ error: studentError });
